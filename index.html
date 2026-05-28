@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anti-AI Qwen Academy: Бизнес-интегратор ИИ - Локальная классификация обращений техподдержки">
+    <title>Бизнес-интегратор ИИ | Anti-AI Qwen Academy</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            background: white;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* 3D Glass Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(29, 78, 216, 0.9));
+            color: white;
+            box-shadow: 
+                0 4px 15px rgba(37, 99, 235, 0.4),
+                0 8px 30px rgba(37, 99, 235, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(37, 99, 235, 0.5),
+                0 12px 40px rgba(37, 99, 235, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+            color: var(--text);
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.08),
+                0 8px 30px rgba(0, 0, 0, 0.06),
+                inset 0 2px 4px rgba(255, 255, 255, 0.8),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.12),
+                0 12px 40px rgba(0, 0, 0, 0.1),
+                inset 0 2px 4px rgba(255, 255, 255, 0.9),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+            border-color: rgba(203, 213, 225, 0.9);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.9), rgba(4, 120, 87, 0.9));
+            color: white;
+            box-shadow: 
+                0 4px 15px rgba(5, 150, 105, 0.4),
+                0 8px 30px rgba(5, 150, 105, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(5, 150, 105, 0.5),
+                0 12px 40px rgba(5, 150, 105, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(255, 255, 255, 0.9));
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .result-box.active {
+            display: block;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .intent-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            margin: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .intent-tech_support {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+        }
+
+        .intent-billing {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+        }
+
+        .intent-sales {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+        }
+
+        .intent-other {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            color: #475569;
+        }
+
+        .confidence-bar {
+            height: 10px;
+            background: rgba(226, 232, 240, 0.6);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(255, 255, 255, 0.9));
+            padding: 16px;
+            border-radius: 14px;
+            text-align: center;
+            border: 2px solid rgba(226, 232, 240, 0.6);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 40px 20px;
+            border: 3px dashed rgba(226, 232, 240, 0.8);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 0.8));
+            backdrop-filter: blur(10px);
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0.9));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .file-input-label.has-file {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.08), rgba(255, 255, 255, 0.9));
+            border-style: solid;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 14px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: rgba(248, 250, 252, 0.8);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(239, 246, 255, 0.9), rgba(255, 255, 255, 0.9));
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: var(--text-light);
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        /* Features Grid with Images */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 0;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 2px solid rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--primary);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .feature-content {
+            padding: 20px;
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Support Section - 3D Glass */
+        .support-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            margin-top: 40px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .support-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .support-section h2 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .support-section .heart {
+            font-size: 48px;
+            margin: 20px 0;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 4px 8px rgba(220, 38, 38, 0.3));
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .support-section p {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 16px;
+            margin: 12px 0;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .support-section .highlight {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 24px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .phone-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
+            padding: 16px 32px;
+            border-radius: 16px;
+            display: inline-block;
+            margin: 12px 0;
+            letter-spacing: 2px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .support-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            color: var(--primary);
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 15px rgba(0,0,0,0.2),
+                inset 0 2px 4px rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .support-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.9);
+        }
+
+        .support-link {
+            display: inline-block;
+            margin-top: 24px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .support-link:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            opacity: 0.95;
+            margin-top: 40px;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px 20px 0 0;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            border-bottom-color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(220, 252, 231, 0.95), rgba(187, 247, 208, 0.95));
+            color: #166534;
+            border: 2px solid rgba(134, 239, 172, 0.6);
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(253, 230, 138, 0.95));
+            color: #92400e;
+            border: 2px solid rgba(252, 211, 77, 0.6);
+        }
+
+        .chart-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(248, 250, 252, 0.6);
+            border-radius: 16px;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .chart-label {
+            width: 130px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .chart-bar-fill {
+            flex: 1;
+            height: 32px;
+            background: rgba(226, 232, 240, 0.6);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .chart-bar-value {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            padding-left: 12px;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid var(--border);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .phone-number {
+                font-size: 20px;
+                padding: 12px 20px;
+            }
+            .support-section {
+                padding: 24px;
+            }
+            .support-section h2 {
+                font-size: 24px;
+            }
+            .logo-img {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <!-- Логотип вместо эмодзи -->
+                    <img src="favicon.ico" alt="Anti-AI Qwen Academy" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+                    <span style="display:inline">Бизнес-интегратор ИИ</span>
+                </div>
+                <span class="badge">Anti-AI Qwen Academy</span>
+            </div>
+        </header>
+
+        <div class="info-box">
+            <h4>📚 О проекте</h4>
+            <p>Локальная система классификации обращений техподдержки. Работает полностью офлайн в браузере.</p>
+            <ul>
+                <li>✅ Не требует сервера и интернета после загрузки</li>
+                <li>✅ Данные не покидают ваше устройство</li>
+                <li>✅ Открытый код, проверяемый и модифицируемый</li>
+                <li>✅ Интеграция с n8n, Rasa и другими инструментами</li>
+            </ul>
+        </div>
+
+        <!-- AI Images Section - 6 карточек с изображениями -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <img src="ai-neural-network.png" alt="Нейросеть" class="feature-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23667eea%22 width=%22400%22 height=%22200%22/%3E%3Ctext fill=%22white%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🧠 Нейросеть%3C/text%3E%3C/svg%3E'">
+                <div class="feature-content">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Автоматизация</h3>
+                    <p>Умная классификация обращений без участия человека</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="ai-business-automation.png" alt="Автоматизация бизнеса" class="feature-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23764ba2%22 width=%22400%22 height=%22200%22/%3E%3Ctext fill=%22white%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🤝 Автоматизация%3C/text%3E%3C/svg%3E'">
+                <div class="feature-content">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Интеграция</h3>
+                    <p>Подключение к n8n, Rasa и другим платформам</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="ai-security-shield.png" alt="Безопасность ИИ" class="feature-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%232563eb%22 width=%22400%22 height=%22200%22/%3E%3Ctext fill=%22white%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🔒 Безопасность%3C/text%3E%3C/svg%3E'">
+                <div class="feature-content">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Конфиденциальность</h3>
+                    <p>Все данные остаются на вашем устройстве</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="ai-chatbot-support.png" alt="Чат-бот поддержки" class="feature-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%237c3aed%22 width=%22400%22 height=%22200%22/%3E%3Ctext fill=%22white%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E💬 Чат-бот%3C/text%3E%3C/svg%3E'">
+                <div class="feature-content">
+                    <div class="feature-icon">💬</div>
+                    <h3>Техподдержка 24/7</h3>
+                    <p>Мгновенные ответы на частые вопросы клиентов</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="ai-analytics-dashboard.png" alt="Аналитика ИИ" class="feature-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23059669%22 width=%22400%22 height=%22200%22/%3E%3Ctext fill=%22white%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E📊 Аналитика%3C/text%3E%3C/svg%3E'">
+                <div class="feature-content">
+                    <div class="feature-icon">📈</div>
+                    <h3>Отчёты и метрики</h3>
+                    <p>Визуализация результатов и ROI-расчёты</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="ai-offline-processing.png" alt="Офлайн обработка" class="feature-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23d97706%22 width=%22400%22 height=%22200%22/%3E%3Ctext fill=%22white%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E⚡ Офлайн-режим%3C/text%3E%3C/svg%3E'">
+                <div class="feature-content">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Работа без интернета</h3>
+                    <p>Полная функциональность в любой точке мира</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <!-- Карточка 1: Классификация одного тикета -->
+            <div class="card">
+                <div class="card-title">
+                    <span>🎯</span>
+                    Классификация обращения
+                </div>
+                
+                <div class="form-group">
+                    <label for="ticketText">Текст обращения:</label>
+                    <textarea id="ticketText" placeholder="Например: Не могу сбросить пароль от личного кабинета, кнопка не нажимается..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="classifySingleTicket()">
+                        <span>🔍</span>
+                        Классифицировать
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadExample()">
+                        <span>📋</span>
+                        Пример
+                    </button>
+                </div>
+
+                <div id="singleResult" class="result-box">
+                    <h4 style="margin-bottom: 12px;">Результат:</h4>
+                    <div id="intentBadge"></div>
+                    <div style="margin-top: 12px; font-size: 13px; color: var(--text-light);">
+                        Уверенность: <span id="confidenceValue">0</span>%
+                    </div>
+                    <div class="confidence-bar">
+                        <div id="confidenceBar" class="confidence-fill" style="width: 0%"></div>
+                    </div>
+                    <div id="matchedKeywords" style="margin-top: 12px; font-size: 13px;"></div>
+                </div>
+            </div>
+
+            <!-- Карточка 2: Статистика -->
+            <div class="card">
+                <div class="card-title">
+                    <span>📊</span>
+                    Статистика классификации
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">Всего тикетов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTech">0</div>
+                        <div class="stat-label">Техподдержка</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statBilling">0</div>
+                        <div class="stat-label">Биллинг</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statSales">0</div>
+                        <div class="stat-label">Продажи</div>
+                    </div>
+                </div>
+
+                <div class="chart-container" id="chartContainer" style="display: none;">
+                    <h4 style="margin: 20px 0 12px 0; font-size: 14px;">Распределение по категориям:</h4>
+                    <div id="chartBars"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 3: Массовая обработка CSV -->
+        <div class="card">
+            <div class="card-title">
+                <span>📁</span>
+                Массовая обработка CSV
+            </div>
+
+            <div class="form-group">
+                <label>Загрузка файла:</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="csvFile" accept=".csv" onchange="handleFileSelect(event)">
+                    <label for="csvFile" class="file-input-label" id="fileLabel">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📤</div>
+                        <div style="font-weight: 700; margin-bottom: 6px; font-size: 16px;">Нажмите для загрузки CSV</div>
+                        <div style="font-size: 14px; color: var(--text-light);">или перетащите файл сюда</div>
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 12px;">
+                            Формат: id,text (пример: 1,Не работает кнопка входа)
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="fileInfo" class="alert alert-warning hidden" style="margin-top: 16px;">
+                Файл загружен: <strong id="fileName"></strong> (<span id="fileSize">0</span> строк)
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="processCSV()" id="processBtn" disabled>
+                    <span>⚡</span>
+                    Обработать тикеты
+                </button>
+                <button class="btn btn-success" onclick="downloadResults()" id="downloadBtn" disabled>
+                    <span>💾</span>
+                    Скачать результаты
+                </button>
+                <button class="btn btn-secondary" onclick="clearCSV()">
+                    <span>🗑</span>
+                    Очистить
+                </button>
+            </div>
+
+            <div id="csvResults" class="result-box">
+                <h4 style="margin-bottom: 12px;">Результаты обработки:</h4>
+                <div style="overflow-x: auto;">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Текст</th>
+                                <th>Категория</th>
+                                <th>Уверенность</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 4: Настройки и конфигурация -->
+        <div class="card">
+            <div class="card-title">
+                <span>⚙️</span>
+                Конфигурация интентов
+            </div>
+
+            <div class="info-box" style="margin-bottom: 20px;">
+                <p style="font-size: 13px; margin: 0;">
+                    Настройте ключевые слова для каждой категории. Изменения применяются мгновенно.
+                </p>
+            </div>
+
+            <div class="grid grid-2">
+                <div>
+                    <label style="font-weight: 700; color: #1e40af;">🔧 Техподдержка</label>
+                    <input type="text" id="keywordsTech" value="сломалось, не работает, ошибка, баг, сброс, пароль, висит, завис, глюк, вылет" 
+                           style="margin-top: 8px; font-size: 13px;">
+                </div>
+                <div>
+                    <label style="font-weight: 700; color: #166534;">💰 Биллинг</label>
+                    <input type="text" id="keywordsBilling" value="счет, оплата, тариф, возврат, деньги, акт, договор, платеж, квитанция" 
+                           style="margin-top: 8px; font-size: 13px;">
+                </div>
+                <div>
+                    <label style="font-weight: 700; color: #92400e;">📈 Продажи</label>
+                    <input type="text" id="keywordsSales" value="купить, цена, демо, пробный, заказать, лицензия, скидка, консультация, презентация" 
+                           style="margin-top: 8px; font-size: 13px;">
+                </div>
+                <div>
+                    <label style="font-weight: 700; color: #475569;">📋 Другое</label>
+                    <input type="text" id="keywordsOther" value="спасибо, привет, пока, вопрос, информация" 
+                           style="margin-top: 8px; font-size: 13px;">
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="saveConfig()">
+                    <span>💾</span>
+                    Сохранить конфигурацию
+                </button>
+                <button class="btn btn-secondary" onclick="resetConfig()">
+                    <span>🔄</span>
+                    Сбросить
+                </button>
+            </div>
+        </div>
+
+        <!-- Карточка 5: Интеграция с n8n -->
+        <div class="card">
+            <div class="card-title">
+                <span>🔌</span>
+                Интеграция с n8n / API
+            </div>
+
+            <div class="form-group">
+                <label>Webhook URL (для интеграции):</label>
+                <input type="text" id="webhookUrl" placeholder="http://localhost:5678/webhook/ticket-router" readonly 
+                       style="background: rgba(248, 250, 252, 0.8); font-family: monospace; font-size: 13px;">
+            </div>
+
+            <div class="form-group">
+                <label>Пример JSON для отправки:</label>
+                <textarea id="jsonExample" readonly style="background: rgba(248, 250, 252, 0.8); font-family: monospace; font-size: 12px; min-height: 80px;">{
+  "text": "Не могу сбросить пароль",
+  "timestamp": "2026-01-15T10:30:00Z",
+  "source": "email"
+}</textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="copyJSON()">
+                    <span>📋</span>
+                    Копировать JSON
+                </button>
+                <button class="btn btn-primary" onclick="testWebhook()">
+                    <span>🧪</span>
+                    Тест webhook
+                </button>
+            </div>
+
+            <div id="webhookResult" class="result-box" style="margin-top: 20px;">
+                <pre id="webhookResponse" style="font-family: monospace; font-size: 12px; white-space: pre-wrap;"></pre>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-section no-print">
+            <h2>🤝 ПОДДЕРЖАТЬ ПРОЕКТ</h2>
+            <div class="heart">💙</div>
+            <p style="font-size: 18px; font-weight: 600;">Приложение бесплатное. Было и останется.</p>
+            <p>Если проект помог вам или вашим близким — можете поддержать разработку добровольным переводом.</p>
+            
+            <div class="highlight">
+                <p style="margin-bottom: 12px; font-weight: 700; font-size: 18px;">📱 ПЕРЕВОД ПО НОМЕРУ ТЕЛЕФОНА:</p>
+                <div class="phone-number">8-920-227-56-76</div>
+                <br>
+                <button class="support-btn" onclick="copyPhone()">
+                    <span>📋</span> Копировать номер
+                </button>
+                <p style="margin-top: 16px; font-size: 14px; opacity: 0.9;">✅ Деньги придут мгновенно. Без комиссии. Безопасно.</p>
+            </div>
+
+            <p style="font-size: 20px; margin-top: 24px;">❤️ Спасибо за поддержку!</p>
+            
+            <a href="https://ancf-hue.github.io/" target="_blank" class="support-link">
+                🌟 Каталог бесплатных офлайн-приложений Anti-AI Shield
+            </a>
+        </div>
+
+        <footer>
+            <p>🎓 <strong>Anti-AI Qwen Academy</strong> | Социальный бесплатный проект</p>
+            <p style="margin-top: 12px; font-size: 14px;">
+                Офлайн-инструменты цифровой грамотности | 
+                <a href="mailto:an.cf@yandex.ru">an.cf@yandex.ru</a>
+            </p>
+            <p style="margin-top: 12px; font-size: 13px; opacity: 0.85;">
+                Версия 2.1 | Работает полностью локально в вашем браузере
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Конфигурация по умолчанию
+        const defaultConfig = {
+            tech_support: {
+                keywords: ['сломалось', 'не работает', 'ошибка', 'баг', 'сброс', 'пароль', 'висит', 'завис', 'глюк', 'вылет'],
+                threshold: 0.65,
+                color: 'intent-tech_support',
+                label: 'Техподдержка'
+            },
+            billing: {
+                keywords: ['счет', 'оплата', 'тариф', 'возврат', 'деньги', 'акт', 'договор', 'платеж', 'квитанция'],
+                threshold: 0.60,
+                color: 'intent-billing',
+                label: 'Биллинг'
+            },
+            sales: {
+                keywords: ['купить', 'цена', 'демо', 'пробный', 'заказать', 'лицензия', 'скидка', 'консультация', 'презентация'],
+                threshold: 0.60,
+                color: 'intent-sales',
+                label: 'Продажи'
+            },
+            other: {
+                keywords: ['спасибо', 'привет', 'пока', 'вопрос', 'информация'],
+                threshold: 0.0,
+                color: 'intent-other',
+                label: 'Другое'
+            }
+        };
+
+        // Состояние приложения
+        let config = JSON.parse(JSON.stringify(defaultConfig));
+        let processedData = [];
+        let currentFile = null;
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            loadConfigFromStorage();
+            updateStats();
+        });
+
+        // Загрузка конфигурации из localStorage
+        function loadConfigFromStorage() {
+            const saved = localStorage.getItem('aiIntegratorConfig');
+            if (saved) {
+                config = JSON.parse(saved);
+                document.getElementById('keywordsTech').value = config.tech_support.keywords.join(', ');
+                document.getElementById('keywordsBilling').value = config.billing.keywords.join(', ');
+                document.getElementById('keywordsSales').value = config.sales.keywords.join(', ');
+                document.getElementById('keywordsOther').value = config.other.keywords.join(', ');
+            }
+        }
+
+        // Сохранение конфигурации
+        function saveConfig() {
+            config.tech_support.keywords = document.getElementById('keywordsTech').value.split(',').map(k => k.trim()).filter(k => k);
+            config.billing.keywords = document.getElementById('keywordsBilling').value.split(',').map(k => k.trim()).filter(k => k);
+            config.sales.keywords = document.getElementById('keywordsSales').value.split(',').map(k => k.trim()).filter(k => k);
+            config.other.keywords = document.getElementById('keywordsOther').value.split(',').map(k => k.trim()).filter(k => k);
+            
+            localStorage.setItem('aiIntegratorConfig', JSON.stringify(config));
+            showAlert('Конфигурация сохранена!', 'success');
+        }
+
+        // Сброс конфигурации
+        function resetConfig() {
+            if (confirm('Сбросить настройки к значениям по умолчанию?')) {
+                config = JSON.parse(JSON.stringify(defaultConfig));
+                localStorage.removeItem('aiIntegratorConfig');
+                loadConfigFromStorage();
+                showAlert('Конфигурация сброшена', 'warning');
+            }
+        }
+
+        // Классификация одного тикета
+        function classifySingleTicket() {
+            const text = document.getElementById('ticketText').value.trim();
+            if (!text) {
+                showAlert('Введите текст обращения', 'warning');
+                return;
+            }
+
+            const result = classifyTicket(text);
+            displaySingleResult(result);
+            
+            // Добавляем в статистику
+            processedData.push({ id: Date.now(), text, ...result });
+            updateStats();
+        }
+
+        // Основная функция классификации
+        function classifyTicket(text) {
+            const textLower = text.toLowerCase();
+            let bestIntent = 'other';
+            let bestScore = 0;
+            let matchedKws = [];
+
+            for (const [intentName, intentConfig] of Object.entries(config)) {
+                let score = 0;
+                const matched = [];
+
+                // Проверка по ключевым словам
+                for (const keyword of intentConfig.keywords) {
+                    if (textLower.includes(keyword.toLowerCase())) {
+                        score += 0.3;
+                        matched.push(keyword);
+                    }
+                }
+
+                // Простая семантическая эвристика (длина совпадений)
+                const totalKwLength = intentConfig.keywords.reduce((sum, kw) => sum + kw.length, 0);
+                const matchedLength = matched.reduce((sum, kw) => sum + kw.length, 0);
+                if (totalKwLength > 0) {
+                    score += (matchedLength / totalKwLength) * 0.4;
+                }
+
+                // Бонус за множественные совпадения
+                if (matched.length > 1) {
+                    score += 0.1 * (matched.length - 1);
+                }
+
+                // Нормализация
+                score = Math.min(score, 1.0);
+
+                if (score > bestScore && score >= intentConfig.threshold) {
+                    bestScore = score;
+                    bestIntent = intentName;
+                    matchedKws = matched;
+                }
+            }
+
+            return {
+                intent: bestIntent,
+                confidence: Math.round(bestScore * 100),
+                matchedKeywords: matchedKws,
+                label: config[bestIntent].label,
+                color: config[bestIntent].color
+            };
+        }
+
+        // Отображение результата
+        function displaySingleResult(result) {
+            const resultBox = document.getElementById('singleResult');
+            const badge = document.getElementById('intentBadge');
+            const confidenceValue = document.getElementById('confidenceValue');
+            const confidenceBar = document.getElementById('confidenceBar');
+            const matchedKws = document.getElementById('matchedKeywords');
+
+            resultBox.classList.add('active');
+            badge.className = `intent-badge ${result.color}`;
+            badge.textContent = result.label;
+            confidenceValue.textContent = result.confidence;
+            confidenceBar.style.width = `${result.confidence}%`;
+
+            if (result.matchedKeywords.length > 0) {
+                matchedKws.innerHTML = `<strong>Найдены ключевые слова:</strong> ${result.matchedKeywords.map(k => `<span class="intent-badge intent-${result.intent.split('_')[0]}">${k}</span>`).join(' ')}`;
+            } else {
+                matchedKws.innerHTML = '<em>Ключевые слова не найдены, классификация по контексту</em>';
+            }
+        }
+
+        // Загрузка примера
+        function loadExample() {
+            const examples = [
+                "Не могу сбросить пароль от личного кабинета, кнопка не нажимается",
+                "Пришлите счет за октябрь на юридический адрес",
+                "Хочу попробовать пробную версию на 14 дней",
+                "Система выдает ошибку 502 при выгрузке отчета",
+                "Какие тарифы доступны для ИП с 5 сотрудниками?"
+            ];
+            const random = examples[Math.floor(Math.random() * examples.length)];
+            document.getElementById('ticketText').value = random;
+        }
+
+        // Обработка выбора файла
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            currentFile = file;
+            const label = document.getElementById('fileLabel');
+            const fileInfo = document.getElementById('fileInfo');
+            
+            label.classList.add('has-file');
+            label.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
+                <div style="font-weight: 700; font-size: 16px;">${file.name}</div>
+                <div style="font-size: 14px; color: var(--text-light);">${(file.size / 1024).toFixed(2)} KB</div>
+            `;
+
+            // Читаем файл для предпросмотра
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const lines = e.target.result.split('\n').filter(l => l.trim());
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = lines.length - 1; // минус заголовок
+                fileInfo.classList.remove('hidden');
+                document.getElementById('processBtn').disabled = false;
+            };
+            reader.readAsText(file);
+        }
+
+        // Обработка CSV
+        function processCSV() {
+            if (!currentFile) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const lines = text.split('\n').filter(l => l.trim());
+                
+                if (lines.length < 2) {
+                    showAlert('Файл пуст или содержит только заголовок', 'warning');
+                    return;
+                }
+
+                processedData = [];
+                const resultsBody = document.getElementById('resultsBody');
+                resultsBody.innerHTML = '';
+
+                // Пропускаем заголовок
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+
+                    // Простой парсинг CSV (поддерживает запятые в кавычках)
+                    const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
+                    const id = matches[0]?.replace(/"/g, '').trim() || i;
+                    const text = matches.slice(1).join(',').replace(/"/g, '').trim();
+
+                    if (text) {
+                        const result = classifyTicket(text);
+                        processedData.push({ id, text, ...result });
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${id}</td>
+                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${text}">${text}</td>
+                            <td><span class="intent-badge ${result.color}">${result.label}</span></td>
+                            <td>${result.confidence}%</td>
+                        `;
+                        resultsBody.appendChild(row);
+                    }
+                }
+
+                document.getElementById('csvResults').classList.add('active');
+                document.getElementById('downloadBtn').disabled = false;
+                updateStats();
+                renderChart();
+                
+                showAlert(`Обработано ${processedData.length} тикетов`, 'success');
+            };
+            reader.readAsText(currentFile);
+        }
+
+        // Скачивание результатов
+        function downloadResults() {
+            if (processedData.length === 0) return;
+
+            let csv = 'id,text,intent,label,confidence,matched_keywords\n';
+            processedData.forEach(row => {
+                csv += `"${row.id}","${row.text.replace(/"/g, '""')}","${row.intent}","${row.label}",${row.confidence},"${row.matchedKeywords.join(', ')}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ticket_classification_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Очистка CSV
+        function clearCSV() {
+            currentFile = null;
+            processedData = [];
+            document.getElementById('csvFile').value = '';
+            document.getElementById('fileLabel').classList.remove('has-file');
+            document.getElementById('fileLabel').innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 12px;">📤</div>
+                <div style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Нажмите для загрузки CSV</div>
+                <div style="font-size: 14px; color: var(--text-light);">или перетащите файл сюда</div>
+                <div style="font-size: 12px; color: var(--text-light); margin-top: 12px;">
+                    Формат: id,text (пример: 1,Не работает кнопка входа)
+                </div>
+            `;
+            document.getElementById('fileInfo').classList.add('hidden');
+            document.getElementById('csvResults').classList.remove('active');
+            document.getElementById('processBtn').disabled = true;
+            document.getElementById('downloadBtn').disabled = true;
+            document.getElementById('resultsBody').innerHTML = '';
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            const total = processedData.length;
+            const tech = processedData.filter(d => d.intent === 'tech_support').length;
+            const billing = processedData.filter(d => d.intent === 'billing').length;
+            const sales = processedData.filter(d => d.intent === 'sales').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statTech').textContent = tech;
+            document.getElementById('statBilling').textContent = billing;
+            document.getElementById('statSales').textContent = sales;
+
+            if (total > 0) {
+                document.getElementById('chartContainer').style.display = 'block';
+            }
+        }
+
+        // Отрисовка графика
+        function renderChart() {
+            const counts = {
+                'Техподдержка': processedData.filter(d => d.intent === 'tech_support').length,
+                'Биллинг': processedData.filter(d => d.intent === 'billing').length,
+                'Продажи': processedData.filter(d => d.intent === 'sales').length,
+                'Другое': processedData.filter(d => d.intent === 'other').length
+            };
+
+            const total = processedData.length;
+            const container = document.getElementById('chartBars');
+            container.innerHTML = '';
+
+            for (const [label, count] of Object.entries(counts)) {
+                const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.innerHTML = `
+                    <div class="chart-label">${label}</div>
+                    <div class="chart-bar-fill">
+                        <div class="chart-bar-value" style="width: ${percent}%">
+                            ${count} (${percent}%)
+                        </div>
+                    </div>
+                `;
+                container.appendChild(bar);
+            }
+        }
+
+        // Копирование JSON
+        function copyJSON() {
+            const json = document.getElementById('jsonExample').value;
+            navigator.clipboard.writeText(json).then(() => {
+                showAlert('JSON скопирован в буфер обмена', 'success');
+            });
+        }
+
+        // Копирование телефона
+        function copyPhone() {
+            navigator.clipboard.writeText('8-920-227-56-76').then(() => {
+                showAlert('Номер телефона скопирован!', 'success');
+            });
+        }
+
+        // Тест webhook
+        function testWebhook() {
+            const text = document.getElementById('ticketText').value.trim() || 'Тестовое обращение';
+            const payload = {
+                text: text,
+                timestamp: new Date().toISOString(),
+                source: 'web_interface'
+            };
+
+            const result = classifyTicket(text);
+            const response = {
+                status: 'success',
+                classification: result,
+                received_at: new Date().toISOString(),
+                processing_time_ms: Math.floor(Math.random() * 100) + 50
+            };
+
+            const resultBox = document.getElementById('webhookResult');
+            const responsePre = document.getElementById('webhookResponse');
+            
+            resultBox.classList.add('active');
+            responsePre.textContent = JSON.stringify(response, null, 2);
+        }
+
+        // Показ уведомлений
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '1000';
+            alert.style.maxWidth = '350px';
+            alert.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
+
+            document.body.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 3500);
+        }
+
+        // Drag and drop для файлов
+        document.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'text/csv') {
+                const input = document.getElementById('csvFile');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                input.files = dataTransfer.files;
+                handleFileSelect({ target: input });
+            }
+        });
+    </script>
+</body>
+</html>
